@@ -16,31 +16,47 @@ int main(int argc, char* argv[])
     int scoreboard = 0;
     int piecesx = 1;
     int piecesy = 1;
+    int gameMatrix[4][4] = {
+        { 0, 0, 0, 0 },
+        { 0, 0, 0, 0 },
+        { 0, 0, 0, 0 },
+        { 0, 0, 0, 0 }
+    };
     while (!WindowShouldClose()) {
         /* Read Keyboard Inputs */
         bool isDownPressed = IsKeyPressed(KEY_DOWN);
         bool isUpPressed = IsKeyPressed(KEY_UP);
         bool isRightPressed = IsKeyPressed(KEY_RIGHT);
         bool isLeftPressed = IsKeyPressed(KEY_LEFT);
+        bool isAnyKeyPressed = false;
 
         /* Do logic */
 
         if (isDownPressed) {
-            piecesx = GetRandomValue(1, 4);
-            piecesy = GetRandomValue(1, 4);
+            piecesx = GetRandomValue(0, 3);
+            piecesy = GetRandomValue(0, 3);
+            isAnyKeyPressed =true;
         }
         if (isUpPressed) {
-            piecesx = GetRandomValue(1, 4);
-            piecesy = GetRandomValue(1, 4);
+            piecesx = GetRandomValue(0, 3);
+            piecesy = GetRandomValue(0, 3);
+            isAnyKeyPressed =true;
         }
         if (isRightPressed) {
-            piecesx = GetRandomValue(1, 4);
-            piecesy = GetRandomValue(1, 4);
+            piecesx = GetRandomValue(0, 3);
+            piecesy = GetRandomValue(0, 3);
+            isAnyKeyPressed =true;
         }
         if (isLeftPressed) {
-            piecesx = GetRandomValue(1, 4);
-            piecesy = GetRandomValue(1, 4);
+            piecesx = GetRandomValue(0, 3);
+            piecesy = GetRandomValue(0, 3);
+            isAnyKeyPressed =true;
         }
+
+        if(isAnyKeyPressed){
+            gameMatrix[piecesy][piecesx] = 2;
+        }
+
 
         /* Draw everthing */
 
@@ -51,8 +67,21 @@ int main(int argc, char* argv[])
         DrawRectangle(100, 100, 600, 600, GRAY);
 
         /* Draw pieces */
-        DrawRectangle(piecesx * 150 - 50, piecesy * 150 - 50, 150, 150, RED);
-        DrawText("2048", piecesx * 150 + 20 - 50, piecesy * 150 + 55 - 50, 40, WHITE);
+        int x = 0;
+        while(x<4){
+            int y = 0;
+            while(y<4){
+                if(gameMatrix[y][x]!=0){
+                    char appear[7] ="";
+
+                    sprintf(appear, "%d",gameMatrix[y][x]);
+                    DrawRectangle(100 + (x * 150) , 100 + (y * 150) , 150, 150, RED);
+                    DrawText(appear, 100 + (x * 150) + 20 , 100 + (y * 150) + 55 , 40, WHITE);
+                }
+                y = y+1;
+            }
+            x = x+1;
+        }
 
         /* Draw borders */
         DrawLine(250, 100, 250, 700, WHITE);
