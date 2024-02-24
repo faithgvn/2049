@@ -2,6 +2,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+/***
+ * 2048 0 0 0
+ * 0 0 0 0
+ * 0 0 0 0
+ * 0 0 0 0
+ */
+
 int main(int argc, char* argv[])
 {
     InitWindow(800, 800, "2049 by faithgvn");
@@ -19,16 +26,20 @@ int main(int argc, char* argv[])
         /* Do logic */
 
         if (isDownPressed) {
-            piecesy = piecesy + 1;
+            piecesx = GetRandomValue(1, 4);
+            piecesy = GetRandomValue(1, 4);
         }
         if (isUpPressed) {
-            piecesy = piecesy - 1;
+            piecesx = GetRandomValue(1, 4);
+            piecesy = GetRandomValue(1, 4);
         }
         if (isRightPressed) {
-            piecesx = piecesx + 1;
+            piecesx = GetRandomValue(1, 4);
+            piecesy = GetRandomValue(1, 4);
         }
         if (isLeftPressed) {
-            piecesx = piecesx - 1;
+            piecesx = GetRandomValue(1, 4);
+            piecesy = GetRandomValue(1, 4);
         }
 
         /* Draw everthing */
