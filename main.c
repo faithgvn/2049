@@ -7,8 +7,8 @@ int main(int argc, char* argv[])
     InitWindow(800, 800, "2049 by faithgvn");
 
     int scoreboard = 0;
-    int piecesx = 100;
-    int piecesy = 100;
+    int piecesx = 1;
+    int piecesy = 1;
     while (!WindowShouldClose()) {
         /* Read Keyboard Inputs */
         bool isDownPressed = IsKeyPressed(KEY_DOWN);
@@ -19,16 +19,16 @@ int main(int argc, char* argv[])
         /* Do logic */
 
         if (isDownPressed) {
-            piecesy = piecesy + 150;
+            piecesy = piecesy + 1;
         }
         if (isUpPressed) {
-            piecesy = piecesy - 150;
+            piecesy = piecesy - 1;
         }
         if (isRightPressed) {
-            piecesx = piecesx + 150;
+            piecesx = piecesx + 1;
         }
         if (isLeftPressed) {
-            piecesx = piecesx - 150;
+            piecesx = piecesx - 1;
         }
 
         /* Draw everthing */
@@ -40,8 +40,8 @@ int main(int argc, char* argv[])
         DrawRectangle(100, 100, 600, 600, GRAY);
 
         /* Draw pieces */
-        DrawRectangle(piecesx, piecesy, 150, 150, RED);
-        DrawText("2048", piecesx + 20, piecesy + 55, 40, WHITE);
+        DrawRectangle(piecesx * 150 - 50, piecesy * 150 - 50, 150, 150, RED);
+        DrawText("2048", piecesx * 150 + 20 - 50, piecesy * 150 + 55 - 50, 40, WHITE);
 
         /* Draw borders */
         DrawLine(250, 100, 250, 700, WHITE);
