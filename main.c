@@ -14,8 +14,6 @@ int main(int argc, char* argv[])
     InitWindow(800, 800, "2049 by faithgvn");
 
     int scoreboard = 0;
-    int piecesx = GetRandomValue(0, 3);
-    int piecesy = GetRandomValue(0, 3);
     int gameMatrix[4][4] = {
         { 0, 0, 0, 0 },
         { 0, 0, 0, 0 },
@@ -47,7 +45,88 @@ int main(int argc, char* argv[])
             isAnyKeyPressed = true;
         }
 
+        /* Move all pieces to left */
+
+        if (isLeftPressed) {
+            int x = 1;
+            while (x < 4) {
+                int y = 0;
+                while (y < 4) {
+                    int tempX = x;
+                    while (tempX != 0) {
+                        if (gameMatrix[y][tempX - 1] == 0) {
+                            gameMatrix[y][tempX - 1] = gameMatrix[y][tempX];
+                            gameMatrix[y][tempX] = 0;
+                        }
+                        tempX = tempX - 1;
+                    }
+                    y = y + 1;
+                }
+                x = x + 1;
+            }
+        }
+
+        if (isRightPressed) {
+            int x = 2;
+            while (x >= 0) {
+                int y = 0;
+                while (y < 4) {
+                    int tempX = x;
+                    while (tempX != 3) {
+                        if (gameMatrix[y][tempX + 1] == 0) {
+                            gameMatrix[y][tempX + 1] = gameMatrix[y][tempX];
+                            gameMatrix[y][tempX] = 0;
+                        }
+                        tempX = tempX + 1;
+                    }
+                    y = y + 1;
+                }
+                x = x - 1;
+            }
+        }
+
+        if (isDownPressed) {
+            int y = 2;
+            while (y >= 0) {
+                int x = 0;
+                while (x < 4) {
+                    int tempY = y;
+                    while (tempY != 3) {
+                        if (gameMatrix[tempY + 1][x] == 0) {
+                            gameMatrix[tempY + 1][x] = gameMatrix[tempY][x];
+                            gameMatrix[tempY][x] = 0;
+                        }
+                        tempY = tempY + 1;
+                    }
+                    x = x + 1;
+                }
+                y = y - 1;
+            }
+        }
+
+        if (isUpPressed) {
+            int y = 1;
+            while (y < 4) {
+                int x = 0;
+                while (x < 4) {
+                    int tempY = y;
+                    while (tempY != 0) {
+                        if (gameMatrix[tempY - 1][x] == 0) {
+                            gameMatrix[tempY - 1][x] = gameMatrix[tempY][x];
+                            gameMatrix[tempY][x] = 0;
+                        }
+                        tempY = tempY - 1;
+                    }
+                    x = x + 1;
+                }
+                y = y + 1;
+            }
+        }
+
         if (isAnyKeyPressed && emptyCell > 0 || emptyCell == 16) {
+
+            int piecesx = GetRandomValue(0, 3);
+            int piecesy = GetRandomValue(0, 3);
             while (gameMatrix[piecesy][piecesx] != 0) {
                 piecesx = GetRandomValue(0, 3);
                 piecesy = GetRandomValue(0, 3);
