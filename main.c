@@ -15,10 +15,10 @@ int main(int argc, char* argv[])
 
     int scoreboard = 0;
     int gameMatrix[4][4] = {
-        { 0, 0, 0, 0 },
-        { 0, 0, 0, 0 },
-        { 0, 0, 0, 0 },
-        { 0, 0, 0, 0 }
+        { 2, 2, 2, 4 },
+        { 8, 4, 2, 2 },
+        { 0, 2, 0, 2 },
+        { 0, 2, 0, 0 }
     };
     int emptyCell = 16;
 
@@ -72,12 +72,27 @@ int main(int argc, char* argv[])
                 int y = 0;
                 while (y < 4) {
                     int tempX = x;
-                    while (tempX != 3) {
-                        if (gameMatrix[y][tempX + 1] == 0) {
+                    int maxX = 3;
+                    while (tempX < maxX) {
+
+                        if (gameMatrix[y][tempX] == 0) {
+                            break;
+                        }
+                        if (gameMatrix[y][tempX] == gameMatrix[y][tempX + 1]) {
+                            gameMatrix[y][tempX] = gameMatrix[y][tempX] + gameMatrix[y][tempX + 1];
+                            gameMatrix[y][tempX + 1] = 0;
+                        }
+                        if (gameMatrix[y][tempX+1] == 0) {
                             gameMatrix[y][tempX + 1] = gameMatrix[y][tempX];
                             gameMatrix[y][tempX] = 0;
                         }
                         tempX = tempX + 1;
+
+
+                        if (gameMatrix[y][maxX] != 0) {
+                            maxX=maxX-1;
+                            break;
+                        }
                     }
                     y = y + 1;
                 }
@@ -123,7 +138,7 @@ int main(int argc, char* argv[])
             }
         }
 
-        if (isAnyKeyPressed && emptyCell > 0 || emptyCell == 16) {
+        if (isAnyKeyPressed) {
 
             int piecesx = GetRandomValue(0, 3);
             int piecesy = GetRandomValue(0, 3);
@@ -132,7 +147,6 @@ int main(int argc, char* argv[])
                 piecesy = GetRandomValue(0, 3);
             }
             gameMatrix[piecesy][piecesx] = 2;
-            emptyCell = emptyCell - 1;
         }
 
         /* Draw everthing */
