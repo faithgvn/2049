@@ -18,7 +18,7 @@ int main(int argc, char* argv[])
         { 2, 2, 2, 4 },
         { 8, 4, 2, 2 },
         { 0, 2, 0, 2 },
-        { 0, 2, 0, 0 }
+        { 2, 2, 2, 2 }
     };
     int emptyCell = 16;
 
@@ -54,6 +54,13 @@ int main(int argc, char* argv[])
                 while (y < 4) {
                     int tempX = x;
                     while (tempX != 0) {
+                        if (gameMatrix[y][tempX] == 0) {
+                            break;
+                        }
+                        if (gameMatrix[y][tempX] == gameMatrix[y][tempX - 1] && gameMatrix[y][tempX - 1]>0) {
+                            gameMatrix[y][tempX] = -(gameMatrix[y][tempX] + gameMatrix[y][tempX - 1]);
+                            gameMatrix[y][tempX -1] = 0;
+                        }
                         if (gameMatrix[y][tempX - 1] == 0) {
                             gameMatrix[y][tempX - 1] = gameMatrix[y][tempX];
                             gameMatrix[y][tempX] = 0;
@@ -72,14 +79,12 @@ int main(int argc, char* argv[])
                 int y = 0;
                 while (y < 4) {
                     int tempX = x;
-                    int maxX = 3;
-                    while (tempX < maxX) {
-
+                    while (tempX != 3) {
                         if (gameMatrix[y][tempX] == 0) {
                             break;
                         }
-                        if (gameMatrix[y][tempX] == gameMatrix[y][tempX + 1]) {
-                            gameMatrix[y][tempX] = gameMatrix[y][tempX] + gameMatrix[y][tempX + 1];
+                        if (gameMatrix[y][tempX] == gameMatrix[y][tempX + 1] && gameMatrix[y][tempX + 1]>0) {
+                            gameMatrix[y][tempX] = -(gameMatrix[y][tempX] + gameMatrix[y][tempX + 1]);
                             gameMatrix[y][tempX + 1] = 0;
                         }
                         if (gameMatrix[y][tempX+1] == 0) {
@@ -87,12 +92,6 @@ int main(int argc, char* argv[])
                             gameMatrix[y][tempX] = 0;
                         }
                         tempX = tempX + 1;
-
-
-                        if (gameMatrix[y][maxX] != 0) {
-                            maxX=maxX-1;
-                            break;
-                        }
                     }
                     y = y + 1;
                 }
@@ -107,6 +106,13 @@ int main(int argc, char* argv[])
                 while (x < 4) {
                     int tempY = y;
                     while (tempY != 3) {
+                        if (gameMatrix[tempY][x] == 0) {
+                            break;
+                        }
+                        if (gameMatrix[tempY][x] == gameMatrix[tempY + 1][x] && gameMatrix[tempY + 1][x]>0) {
+                            gameMatrix[tempY][x] = -(gameMatrix[tempY][x] + gameMatrix[tempY + 1][x]);
+                            gameMatrix[tempY + 1][x] = 0;
+                        }
                         if (gameMatrix[tempY + 1][x] == 0) {
                             gameMatrix[tempY + 1][x] = gameMatrix[tempY][x];
                             gameMatrix[tempY][x] = 0;
@@ -126,6 +132,13 @@ int main(int argc, char* argv[])
                 while (x < 4) {
                     int tempY = y;
                     while (tempY != 0) {
+                        if (gameMatrix[tempY][x] == 0) {
+                            break;
+                        }
+                        if (gameMatrix[tempY][x] == gameMatrix[tempY - 1][x] && gameMatrix[tempY - 1][x]>0) {
+                            gameMatrix[tempY][x] = -(gameMatrix[tempY][x] + gameMatrix[tempY - 1][x]);
+                            gameMatrix[tempY - 1][x] = 0;
+                        }
                         if (gameMatrix[tempY - 1][x] == 0) {
                             gameMatrix[tempY - 1][x] = gameMatrix[tempY][x];
                             gameMatrix[tempY][x] = 0;
@@ -135,6 +148,14 @@ int main(int argc, char* argv[])
                     x = x + 1;
                 }
                 y = y + 1;
+            }
+        }
+
+        for(int i=0;i<4;i++){
+            for(int j = 0 ;j<4;j++){
+                if(gameMatrix[i][j] < 0){
+                    gameMatrix[i][j] = -gameMatrix[i][j];
+                }
             }
         }
 
