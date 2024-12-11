@@ -14,13 +14,8 @@ int main(int argc, char* argv[])
     InitWindow(800, 800, "2049 by faithgvn");
 
     int scoreboard = 0;
-    int gameMatrix[4][4] = {
-        { 2, 2, 2, 4 },
-        { 8, 4, 2, 2 },
-        { 0, 2, 0, 2 },
-        { 2, 2, 2, 2 }
-    };
-    int emptyCell = 16;
+    int gameMatrix[4][4] = { 0 };
+    int emptyCell = 0;
 
     while (!WindowShouldClose()) {
         /* Read Keyboard Inputs */
@@ -29,6 +24,7 @@ int main(int argc, char* argv[])
         bool isRightPressed = IsKeyPressed(KEY_RIGHT);
         bool isLeftPressed = IsKeyPressed(KEY_LEFT);
         bool isAnyKeyPressed = false;
+        int moveCount = 0;
 
         /* Do logic */
 
@@ -43,6 +39,16 @@ int main(int argc, char* argv[])
         }
         if (isLeftPressed) {
             isAnyKeyPressed = true;
+        }
+
+        if (isAnyKeyPressed) {
+            for (int i = 0; i < 4; i++) {
+                for (int j = 0; j < 4; j++) {
+                    if (gameMatrix[i][j] == 0) {
+                        emptyCell++;
+                    }
+                }
+            }
         }
 
         /* Move all pieces to left */
@@ -64,6 +70,7 @@ int main(int argc, char* argv[])
                         if (gameMatrix[y][tempX - 1] == 0) {
                             gameMatrix[y][tempX - 1] = gameMatrix[y][tempX];
                             gameMatrix[y][tempX] = 0;
+                            moveCount++;
                         }
                         tempX = tempX - 1;
                     }
@@ -90,6 +97,7 @@ int main(int argc, char* argv[])
                         if (gameMatrix[y][tempX+1] == 0) {
                             gameMatrix[y][tempX + 1] = gameMatrix[y][tempX];
                             gameMatrix[y][tempX] = 0;
+                            moveCount++;
                         }
                         tempX = tempX + 1;
                     }
@@ -116,6 +124,7 @@ int main(int argc, char* argv[])
                         if (gameMatrix[tempY + 1][x] == 0) {
                             gameMatrix[tempY + 1][x] = gameMatrix[tempY][x];
                             gameMatrix[tempY][x] = 0;
+                            moveCount++;
                         }
                         tempY = tempY + 1;
                     }
@@ -142,6 +151,7 @@ int main(int argc, char* argv[])
                         if (gameMatrix[tempY - 1][x] == 0) {
                             gameMatrix[tempY - 1][x] = gameMatrix[tempY][x];
                             gameMatrix[tempY][x] = 0;
+                            moveCount++;
                         }
                         tempY = tempY - 1;
                     }
@@ -159,7 +169,8 @@ int main(int argc, char* argv[])
             }
         }
 
-        if (isAnyKeyPressed) {
+        if ((isAnyKeyPressed && moveCount > 0) || (isAnyKeyPressed && emptyCell == 16)) {
+            moveCount = 0;
 
             int piecesx = GetRandomValue(0, 3);
             int piecesy = GetRandomValue(0, 3);
