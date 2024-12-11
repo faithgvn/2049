@@ -15,7 +15,7 @@ int main(int argc, char* argv[])
 
     int scoreboard = 0;
     int gameMatrix[4][4] = { 0 };
-    int emptyCell = 0;
+    bool isGameOver = false;
 
     while (!WindowShouldClose()) {
         /* Read Keyboard Inputs */
@@ -25,8 +25,17 @@ int main(int argc, char* argv[])
         bool isLeftPressed = IsKeyPressed(KEY_LEFT);
         bool isAnyKeyPressed = false;
         int moveCount = 0;
-
+        int equalpairs = 0;
         /* Do logic */
+
+        int emptyCell = 0;
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (gameMatrix[i][j] == 0) {
+                    emptyCell++;
+                }
+            }
+        }
 
         if (isDownPressed) {
             isAnyKeyPressed = true;
@@ -41,14 +50,39 @@ int main(int argc, char* argv[])
             isAnyKeyPressed = true;
         }
 
-        if (isAnyKeyPressed) {
-            for (int i = 0; i < 4; i++) {
+        if (isGameOver == false) {
+            for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 4; j++) {
-                    if (gameMatrix[i][j] == 0) {
-                        emptyCell++;
+                    if (gameMatrix[i][j] == gameMatrix[i + 1][j]) {
+                        equalpairs++;
+                    }
+                    if (equalpairs > 0) {
+                        break;
                     }
                 }
+                if (equalpairs > 0) {
+                    break;
+                }
             }
+        }
+
+        if (isGameOver == false) {
+            for (int i = 0; i < 4; i++) {
+                for (int j = 0; j < 3; j++) {
+                    if (gameMatrix[i][j] == gameMatrix[i][j + 1]) {
+                        equalpairs++;
+                    }
+                    if (equalpairs > 0) {
+                        break;
+                    }
+                }
+                if (equalpairs > 0) {
+                    break;
+                }
+            }
+        }
+        if (equalpairs == 0 && emptyCell == 0) {
+            isGameOver = true;
         }
 
         /* Move all pieces to left */
@@ -213,13 +247,15 @@ int main(int argc, char* argv[])
         DrawLine(100, 250, 700, 250, WHITE);
         DrawLine(100, 400, 700, 400, WHITE);
         DrawLine(100, 550, 700, 550, WHITE);
-
+        if (isGameOver) {
+            DrawText("GAMEOVER", 245, 355, 50, BLACK);
+            DrawText("GAMEOVER", 250, 350, 50, WHITE);
+        }
         /* memset(buffer, 0, 16);
         DrawText(itoa(scoreboard, buffer, 10), 10, 30, 20, BLACK); */
 
         EndDrawing();
     }
-
     CloseWindow();
 
     return 0;
