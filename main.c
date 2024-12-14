@@ -16,7 +16,7 @@ int main(int argc, char* argv[])
     int scoreboard = 0;
 
     int gameMatrixEmpty[4][4] = { 0 };
-    int gameMatrix[4][4] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 6 };
+    int gameMatrix[4][4] = { 0 };
     bool isGameOver = false;
 
     while (!WindowShouldClose()) {
@@ -29,11 +29,13 @@ int main(int argc, char* argv[])
         bool isSpacePressed = IsKeyPressed(KEY_SPACE);
         int moveCount = 0;
         int equalpairs = 0;
+        int maxboardvalue = 0;
         /* Do logic */
 
         if (isGameOver == true && isSpacePressed) {
             isGameOver = false;
             memcpy(gameMatrix, gameMatrixEmpty, sizeof(gameMatrixEmpty));
+            scoreboard = 0;
         }
 
         int emptyCell = 0;
@@ -41,6 +43,14 @@ int main(int argc, char* argv[])
             for (int j = 0; j < 4; j++) {
                 if (gameMatrix[i][j] == 0) {
                     emptyCell++;
+                }
+            }
+        }
+
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (maxboardvalue < gameMatrix[i][j]) {
+                    maxboardvalue = gameMatrix[i][j];
                 }
             }
         }
@@ -108,6 +118,7 @@ int main(int argc, char* argv[])
                         if (gameMatrix[y][tempX] == gameMatrix[y][tempX - 1] && gameMatrix[y][tempX - 1]>0) {
                             gameMatrix[y][tempX] = -(gameMatrix[y][tempX] + gameMatrix[y][tempX - 1]);
                             gameMatrix[y][tempX -1] = 0;
+                            scoreboard = scoreboard - (gameMatrix[y][tempX]);
                         }
                         if (gameMatrix[y][tempX - 1] == 0) {
                             gameMatrix[y][tempX - 1] = gameMatrix[y][tempX];
@@ -135,6 +146,7 @@ int main(int argc, char* argv[])
                         if (gameMatrix[y][tempX] == gameMatrix[y][tempX + 1] && gameMatrix[y][tempX + 1]>0) {
                             gameMatrix[y][tempX] = -(gameMatrix[y][tempX] + gameMatrix[y][tempX + 1]);
                             gameMatrix[y][tempX + 1] = 0;
+                            scoreboard = scoreboard - (gameMatrix[y][tempX]);
                         }
                         if (gameMatrix[y][tempX+1] == 0) {
                             gameMatrix[y][tempX + 1] = gameMatrix[y][tempX];
@@ -162,6 +174,7 @@ int main(int argc, char* argv[])
                         if (gameMatrix[tempY][x] == gameMatrix[tempY + 1][x] && gameMatrix[tempY + 1][x]>0) {
                             gameMatrix[tempY][x] = -(gameMatrix[tempY][x] + gameMatrix[tempY + 1][x]);
                             gameMatrix[tempY + 1][x] = 0;
+                            scoreboard = scoreboard - (gameMatrix[tempY][x]);
                         }
                         if (gameMatrix[tempY + 1][x] == 0) {
                             gameMatrix[tempY + 1][x] = gameMatrix[tempY][x];
@@ -189,6 +202,7 @@ int main(int argc, char* argv[])
                         if (gameMatrix[tempY][x] == gameMatrix[tempY - 1][x] && gameMatrix[tempY - 1][x]>0) {
                             gameMatrix[tempY][x] = -(gameMatrix[tempY][x] + gameMatrix[tempY - 1][x]);
                             gameMatrix[tempY - 1][x] = 0;
+                            scoreboard = scoreboard - (gameMatrix[tempY][x]);
                         }
                         if (gameMatrix[tempY - 1][x] == 0) {
                             gameMatrix[tempY - 1][x] = gameMatrix[tempY][x];
@@ -255,14 +269,20 @@ int main(int argc, char* argv[])
         DrawLine(100, 250, 700, 250, WHITE);
         DrawLine(100, 400, 700, 400, WHITE);
         DrawLine(100, 550, 700, 550, WHITE);
+
         if (isGameOver) {
             DrawText("GAMEOVER", 245, 355, 50, BLACK);
             DrawText("GAMEOVER", 250, 350, 50, WHITE);
             DrawText("Press Space to Restart", 200, 490, 30, BLACK);
             DrawText("Press Space to Restart", 205, 485, 30, WHITE);
         }
-        /* memset(buffer, 0, 16);
-        DrawText(itoa(scoreboard, buffer, 10), 10, 30, 20, BLACK); */
+
+        char buffer[16];
+        memset(buffer, 0, 16);
+        DrawText(itoa(scoreboard, buffer, 10), 100, 30, 20, BLACK);
+
+        memset(buffer, 0, 16);
+        DrawText(itoa(maxboardvalue, buffer, 10), 650, 30, 20, BLACK);
 
         EndDrawing();
     }
