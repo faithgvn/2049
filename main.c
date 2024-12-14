@@ -14,7 +14,9 @@ int main(int argc, char* argv[])
     InitWindow(800, 800, "2049 by faithgvn");
 
     int scoreboard = 0;
-    int gameMatrix[4][4] = { 0 };
+
+    int gameMatrixEmpty[4][4] = { 0 };
+    int gameMatrix[4][4] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 6 };
     bool isGameOver = false;
 
     while (!WindowShouldClose()) {
@@ -24,9 +26,15 @@ int main(int argc, char* argv[])
         bool isRightPressed = IsKeyPressed(KEY_RIGHT);
         bool isLeftPressed = IsKeyPressed(KEY_LEFT);
         bool isAnyKeyPressed = false;
+        bool isSpacePressed = IsKeyPressed(KEY_SPACE);
         int moveCount = 0;
         int equalpairs = 0;
         /* Do logic */
+
+        if (isGameOver == true && isSpacePressed) {
+            isGameOver = false;
+            memcpy(gameMatrix, gameMatrixEmpty, sizeof(gameMatrixEmpty));
+        }
 
         int emptyCell = 0;
         for (int i = 0; i < 4; i++) {
@@ -250,6 +258,8 @@ int main(int argc, char* argv[])
         if (isGameOver) {
             DrawText("GAMEOVER", 245, 355, 50, BLACK);
             DrawText("GAMEOVER", 250, 350, 50, WHITE);
+            DrawText("Press Space to Restart", 200, 490, 30, BLACK);
+            DrawText("Press Space to Restart", 205, 485, 30, WHITE);
         }
         /* memset(buffer, 0, 16);
         DrawText(itoa(scoreboard, buffer, 10), 10, 30, 20, BLACK); */
