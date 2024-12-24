@@ -9,15 +9,23 @@
  * 0 0 0 0
  */
 
+typedef struct {
+    int score;
+    int gameMatrix[4][4];
+    bool isGameOver;
+} GameData;
+
 int main(int argc, char* argv[])
 {
     InitWindow(800, 800, "2049 by faithgvn");
 
-    int scoreboard = 0;
+    GameData data = { 0 };
+    GameData prev = { 0 };
+
+    data.score = 0;
 
     int gameMatrixEmpty[4][4] = { 0 };
-    int gameMatrix[4][4] = { 0 };
-    bool isGameOver = false;
+    data.isGameOver = false;
 
     while (!WindowShouldClose()) {
         /* Read Keyboard Inputs */
@@ -27,21 +35,23 @@ int main(int argc, char* argv[])
         bool isLeftPressed = IsKeyPressed(KEY_LEFT);
         bool isAnyKeyPressed = false;
         bool isSpacePressed = IsKeyPressed(KEY_SPACE);
+        bool isBackSpacePressed = IsKeyPressed(KEY_BACKSPACE);
+
         int moveCount = 0;
         int equalpairs = 0;
         int maxboardvalue = 0;
         /* Do logic */
 
-        if (isGameOver == true && isSpacePressed) {
-            isGameOver = false;
-            memcpy(gameMatrix, gameMatrixEmpty, sizeof(gameMatrixEmpty));
-            scoreboard = 0;
+        if (data.isGameOver == true && isSpacePressed) {
+            data.isGameOver = false;
+            memcpy(data.gameMatrix, gameMatrixEmpty, sizeof(gameMatrixEmpty));
+            data.score = 0;
         }
 
         int emptyCell = 0;
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                if (gameMatrix[i][j] == 0) {
+                if (data.gameMatrix[i][j] == 0) {
                     emptyCell++;
                 }
             }
@@ -49,8 +59,8 @@ int main(int argc, char* argv[])
 
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                if (maxboardvalue < gameMatrix[i][j]) {
-                    maxboardvalue = gameMatrix[i][j];
+                if (maxboardvalue < data.gameMatrix[i][j]) {
+                    maxboardvalue = data.gameMatrix[i][j];
                 }
             }
         }
@@ -68,10 +78,10 @@ int main(int argc, char* argv[])
             isAnyKeyPressed = true;
         }
 
-        if (isGameOver == false) {
+        if (data.isGameOver == false) {
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 4; j++) {
-                    if (gameMatrix[i][j] == gameMatrix[i + 1][j]) {
+                    if (data.gameMatrix[i][j] == data.gameMatrix[i + 1][j]) {
                         equalpairs++;
                     }
                     if (equalpairs > 0) {
@@ -84,10 +94,10 @@ int main(int argc, char* argv[])
             }
         }
 
-        if (isGameOver == false) {
+        if (data.isGameOver == false) {
             for (int i = 0; i < 4; i++) {
                 for (int j = 0; j < 3; j++) {
-                    if (gameMatrix[i][j] == gameMatrix[i][j + 1]) {
+                    if (data.gameMatrix[i][j] == data.gameMatrix[i][j + 1]) {
                         equalpairs++;
                     }
                     if (equalpairs > 0) {
@@ -100,10 +110,12 @@ int main(int argc, char* argv[])
             }
         }
         if (equalpairs == 0 && emptyCell == 0) {
-            isGameOver = true;
+            data.isGameOver = true;
         }
 
         /* Move all pieces to left */
+
+        GameData dataBeforeMove = data;
 
         if (isLeftPressed) {
             int x = 1;
@@ -112,17 +124,17 @@ int main(int argc, char* argv[])
                 while (y < 4) {
                     int tempX = x;
                     while (tempX != 0) {
-                        if (gameMatrix[y][tempX] == 0) {
+                        if (data.gameMatrix[y][tempX] == 0) {
                             break;
                         }
-                        if (gameMatrix[y][tempX] == gameMatrix[y][tempX - 1] && gameMatrix[y][tempX - 1]>0) {
-                            gameMatrix[y][tempX] = -(gameMatrix[y][tempX] + gameMatrix[y][tempX - 1]);
-                            gameMatrix[y][tempX -1] = 0;
-                            scoreboard = scoreboard - (gameMatrix[y][tempX]);
+                        if (data.gameMatrix[y][tempX] == data.gameMatrix[y][tempX - 1] && data.gameMatrix[y][tempX - 1] > 0) {
+                            data.gameMatrix[y][tempX] = -(data.gameMatrix[y][tempX] + data.gameMatrix[y][tempX - 1]);
+                            data.gameMatrix[y][tempX - 1] = 0;
+                            data.score = data.score - (data.gameMatrix[y][tempX]);
                         }
-                        if (gameMatrix[y][tempX - 1] == 0) {
-                            gameMatrix[y][tempX - 1] = gameMatrix[y][tempX];
-                            gameMatrix[y][tempX] = 0;
+                        if (data.gameMatrix[y][tempX - 1] == 0) {
+                            data.gameMatrix[y][tempX - 1] = data.gameMatrix[y][tempX];
+                            data.gameMatrix[y][tempX] = 0;
                             moveCount++;
                         }
                         tempX = tempX - 1;
@@ -140,17 +152,17 @@ int main(int argc, char* argv[])
                 while (y < 4) {
                     int tempX = x;
                     while (tempX != 3) {
-                        if (gameMatrix[y][tempX] == 0) {
+                        if (data.gameMatrix[y][tempX] == 0) {
                             break;
                         }
-                        if (gameMatrix[y][tempX] == gameMatrix[y][tempX + 1] && gameMatrix[y][tempX + 1]>0) {
-                            gameMatrix[y][tempX] = -(gameMatrix[y][tempX] + gameMatrix[y][tempX + 1]);
-                            gameMatrix[y][tempX + 1] = 0;
-                            scoreboard = scoreboard - (gameMatrix[y][tempX]);
+                        if (data.gameMatrix[y][tempX] == data.gameMatrix[y][tempX + 1] && data.gameMatrix[y][tempX + 1] > 0) {
+                            data.gameMatrix[y][tempX] = -(data.gameMatrix[y][tempX] + data.gameMatrix[y][tempX + 1]);
+                            data.gameMatrix[y][tempX + 1] = 0;
+                            data.score = data.score - (data.gameMatrix[y][tempX]);
                         }
-                        if (gameMatrix[y][tempX+1] == 0) {
-                            gameMatrix[y][tempX + 1] = gameMatrix[y][tempX];
-                            gameMatrix[y][tempX] = 0;
+                        if (data.gameMatrix[y][tempX + 1] == 0) {
+                            data.gameMatrix[y][tempX + 1] = data.gameMatrix[y][tempX];
+                            data.gameMatrix[y][tempX] = 0;
                             moveCount++;
                         }
                         tempX = tempX + 1;
@@ -168,17 +180,17 @@ int main(int argc, char* argv[])
                 while (x < 4) {
                     int tempY = y;
                     while (tempY != 3) {
-                        if (gameMatrix[tempY][x] == 0) {
+                        if (data.gameMatrix[tempY][x] == 0) {
                             break;
                         }
-                        if (gameMatrix[tempY][x] == gameMatrix[tempY + 1][x] && gameMatrix[tempY + 1][x]>0) {
-                            gameMatrix[tempY][x] = -(gameMatrix[tempY][x] + gameMatrix[tempY + 1][x]);
-                            gameMatrix[tempY + 1][x] = 0;
-                            scoreboard = scoreboard - (gameMatrix[tempY][x]);
+                        if (data.gameMatrix[tempY][x] == data.gameMatrix[tempY + 1][x] && data.gameMatrix[tempY + 1][x] > 0) {
+                            data.gameMatrix[tempY][x] = -(data.gameMatrix[tempY][x] + data.gameMatrix[tempY + 1][x]);
+                            data.gameMatrix[tempY + 1][x] = 0;
+                            data.score = data.score - (data.gameMatrix[tempY][x]);
                         }
-                        if (gameMatrix[tempY + 1][x] == 0) {
-                            gameMatrix[tempY + 1][x] = gameMatrix[tempY][x];
-                            gameMatrix[tempY][x] = 0;
+                        if (data.gameMatrix[tempY + 1][x] == 0) {
+                            data.gameMatrix[tempY + 1][x] = data.gameMatrix[tempY][x];
+                            data.gameMatrix[tempY][x] = 0;
                             moveCount++;
                         }
                         tempY = tempY + 1;
@@ -196,17 +208,17 @@ int main(int argc, char* argv[])
                 while (x < 4) {
                     int tempY = y;
                     while (tempY != 0) {
-                        if (gameMatrix[tempY][x] == 0) {
+                        if (data.gameMatrix[tempY][x] == 0) {
                             break;
                         }
-                        if (gameMatrix[tempY][x] == gameMatrix[tempY - 1][x] && gameMatrix[tempY - 1][x]>0) {
-                            gameMatrix[tempY][x] = -(gameMatrix[tempY][x] + gameMatrix[tempY - 1][x]);
-                            gameMatrix[tempY - 1][x] = 0;
-                            scoreboard = scoreboard - (gameMatrix[tempY][x]);
+                        if (data.gameMatrix[tempY][x] == data.gameMatrix[tempY - 1][x] && data.gameMatrix[tempY - 1][x] > 0) {
+                            data.gameMatrix[tempY][x] = -(data.gameMatrix[tempY][x] + data.gameMatrix[tempY - 1][x]);
+                            data.gameMatrix[tempY - 1][x] = 0;
+                            data.score = data.score - (data.gameMatrix[tempY][x]);
                         }
-                        if (gameMatrix[tempY - 1][x] == 0) {
-                            gameMatrix[tempY - 1][x] = gameMatrix[tempY][x];
-                            gameMatrix[tempY][x] = 0;
+                        if (data.gameMatrix[tempY - 1][x] == 0) {
+                            data.gameMatrix[tempY - 1][x] = data.gameMatrix[tempY][x];
+                            data.gameMatrix[tempY][x] = 0;
                             moveCount++;
                         }
                         tempY = tempY - 1;
@@ -217,24 +229,31 @@ int main(int argc, char* argv[])
             }
         }
 
+        if (isBackSpacePressed) {
+            memcpy(&data, &prev, sizeof(data));
+        }
+
         for(int i=0;i<4;i++){
             for(int j = 0 ;j<4;j++){
-                if(gameMatrix[i][j] < 0){
-                    gameMatrix[i][j] = -gameMatrix[i][j];
+                if (data.gameMatrix[i][j] < 0) {
+                    data.gameMatrix[i][j] = -data.gameMatrix[i][j];
                 }
             }
         }
 
         if ((isAnyKeyPressed && moveCount > 0) || (isAnyKeyPressed && emptyCell == 16)) {
             moveCount = 0;
+            if (memcmp(&dataBeforeMove, &data, sizeof(data)) != 0) {
+                memcpy(&prev, &dataBeforeMove, sizeof(data));
+            }
 
             int piecesx = GetRandomValue(0, 3);
             int piecesy = GetRandomValue(0, 3);
-            while (gameMatrix[piecesy][piecesx] != 0) {
+            while (data.gameMatrix[piecesy][piecesx] != 0) {
                 piecesx = GetRandomValue(0, 3);
                 piecesy = GetRandomValue(0, 3);
             }
-            gameMatrix[piecesy][piecesx] = 2;
+            data.gameMatrix[piecesy][piecesx] = 2;
         }
 
         /* Draw everthing */
@@ -250,10 +269,10 @@ int main(int argc, char* argv[])
         while (x < 4) {
             int y = 0;
             while (y < 4) {
-                if (gameMatrix[y][x] != 0) {
+                if (data.gameMatrix[y][x] != 0) {
                     char appear[7] = "";
 
-                    sprintf(appear, "%d", gameMatrix[y][x]);
+                    sprintf(appear, "%d", data.gameMatrix[y][x]);
                     DrawRectangle(100 + (x * 150), 100 + (y * 150), 150, 150, RED);
                     DrawText(appear, 100 + (x * 150) + 20, 100 + (y * 150) + 55, 40, WHITE);
                 }
@@ -270,7 +289,7 @@ int main(int argc, char* argv[])
         DrawLine(100, 400, 700, 400, WHITE);
         DrawLine(100, 550, 700, 550, WHITE);
 
-        if (isGameOver) {
+        if (data.isGameOver) {
             DrawText("GAMEOVER", 245, 355, 50, BLACK);
             DrawText("GAMEOVER", 250, 350, 50, WHITE);
             DrawText("Press Space to Restart", 200, 490, 30, BLACK);
@@ -279,7 +298,7 @@ int main(int argc, char* argv[])
 
         char buffer[16];
         memset(buffer, 0, 16);
-        DrawText(itoa(scoreboard, buffer, 10), 100, 30, 20, BLACK);
+        DrawText(itoa(data.score, buffer, 10), 100, 30, 20, BLACK);
 
         memset(buffer, 0, 16);
         DrawText(itoa(maxboardvalue, buffer, 10), 650, 30, 20, BLACK);
